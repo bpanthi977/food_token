@@ -1,0 +1,53 @@
+* Introduction
+  Food Token is a mobile application originally created to manage food coupons/tokens during CESS (Civil Engineering Student's Society) Exhibition. It was a proof of concept, and is at working condition but was left unpolished because the exhibition got postponed due to COVID-19.
+
+* Working Mechanism (Human Interaction)
+A food token coordinator has the admin app, which allows him to issue tokens. He needs to specify following information to issue a token:
+
++ Name
++ Email
++ Number of coupons (more than one coupon can be issued in a single token. possible usecase is for issuing a single token to the team leader with coupons for all the members of the team)
++ Program name and role (e.g. participant of Paper Bridge Competition, or coordinator of Presentation Competition)
++ Days for which the token is issued.
+
+Then, the token is sent to the email address.
+
+Now, at the recieving end (participant, coordinators, volunteers), they get an email with different link for each day. Opening each link show a QR code. Then they can go to the food stall, show the QR code, and use their coupons. Each token can only be used for the day it was issued. And in case the token (i.e. the QR) is issued with multiple coupons, they can opt to use all coupons at once, or few at a time any time of the day.
+
+The person at the stall has a different app (stall app), he scans the QR code, and if it is valid, it shows how many coupons are available. He then marks all or desired number of coupons and gives them food. The number of coupons issued (and their date time, and other details) are recorded. Which are later used to complete the payments between the food stall provider and program organizers.
+
+* Working Mechanism (Programming)
+A Firebase cloud firestore database is used to store data online. Record of issued tokens, how many coupons are remaining in each token, and usage of each coupon is maintained on the database. [[https://qrserver.com]] service is used to show QR of tokens.
+
+To further develop on the app, a Firebase project needs to be create with a cloud firestore database. The cloud firestore database has two collections (~tokens~ and ~usage~) with fields as given in follwing sections. For building the app, the credentials for the database needs to be copied to [[./android/app/google-services.json]]. See [[https://support.google.com/firebase/answer/7015592?hl=en#zippy=%2Cin-this-article][here]] on how to obtain the Firebase config file (~google-services.json~ for Android). In current code for ease of development and testing, both roles (admin and stall) are provided in same app which, of course, is not allowable. So, a trivial task of changing the homescreen and building twice, once for stall and once for admin use need to be done.
+
+** Schema
+*** tokens
++ day : timestamp
++ email : string
++ issued : timestamp
++ name : string
++ program : string
++ role : string
++ total : number
++ used : number
+
+*** usage
++ count : number
++ issuer : string
++ timestamp : timestamp
++ token : reference
+** Rules
+At least one rule for controlling read, write was necessary. So, this dummy rule was used.
+
+#+begin_src js
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if
+	  request.time > timestamp.date(2022, 1, 28);
+    }
+  }
+}
+#+end_src
