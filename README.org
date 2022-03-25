@@ -1,5 +1,5 @@
 * Introduction
-  Food Token is a mobile application originally created to manage food coupons/tokens during CESS (Civil Engineering Student's Society) Exhibition. It was a proof of concept, and is at working condition but was left unpolished because the exhibition got postponed due to COVID-19.
+  Food Token is a mobile application originally created to manage food coupons/tokens during [[http://cess.pcampus.edu.np/][CESS]] (Civil Engineering Student's Society) Exhibition. It was a proof of concept, and is at working condition but was left unpolished because the exhibition got postponed due to COVID-19.
 
 * Working Mechanism (Human Interaction)
 A food token coordinator has the admin app, which allows him to issue tokens. He needs to specify following information to issue a token:
